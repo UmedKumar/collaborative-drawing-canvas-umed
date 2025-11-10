@@ -5,7 +5,7 @@ function setupWebSocket(canvasHandler) {
 
   const backendUrl = isLocal
     ? "ws://localhost:8080" 
-    : "wss://collaborative-drawing-server.onrender.com"; 
+    : "wss:/collaborative-drawing-canvas-sxzo.onrender.com"; 
 
   socket = new WebSocket(backendUrl);
 
