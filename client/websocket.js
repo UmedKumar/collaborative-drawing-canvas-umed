@@ -1,20 +1,26 @@
 let socket;
 
 function setupWebSocket(canvasHandler) {
-  socket = new WebSocket(`ws://${window.location.hostname}:8080`);
+  const isLocal = window.location.hostname === "localhost";
 
-  socket.onopen = () => console.log('✅ Connected to server');
+  const backendUrl = isLocal
+    ? "ws://localhost:8080" 
+    : "wss://collaborative-drawing-server.onrender.com"; 
+
+  socket = new WebSocket(backendUrl);
+
+  socket.onopen = () => console.log("✅ Connected to server");
 
   socket.onmessage = (msg) => {
     const data = JSON.parse(msg.data);
     switch (data.type) {
-      case 'draw':
+      case "draw":
         canvasHandler.applyRemotePath(data.path);
         break;
-      case 'undo':
+      case "undo":
         canvasHandler.applyUndo();
         break;
-      case 'redo':
+      case "redo":
         canvasHandler.applyRedo();
         break;
     }
@@ -22,13 +28,13 @@ function setupWebSocket(canvasHandler) {
 }
 
 function sendDrawing(path) {
-  socket.send(JSON.stringify({ type: 'draw', path }));
+  socket.send(JSON.stringify({ type: "draw", path }));
 }
 
 function sendUndo() {
-  socket.send(JSON.stringify({ type: 'undo' }));
+  socket.send(JSON.stringify({ type: "undo" }));
 }
 
 function sendRedo() {
-  socket.send(JSON.stringify({ type: 'redo' }));
+  socket.send(JSON.stringify({ type: "redo" }));
 }
